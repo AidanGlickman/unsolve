@@ -1,17 +1,21 @@
+use rand::prelude::*;
+use splr::*;
 use wasm_bindgen::prelude::*;
 
-#[wasm_bindgen]
-pub fn add(left: usize, right: usize) -> usize {
-    left + right
+struct SudokuBoard {
+    seed: u64,
+    board: [[u8; 9]; 9],
 }
 
-#[cfg(test)]
-mod tests {
-    use super::*;
+impl SudokuBoard {
+    fn new(seed: u64) -> Self {
+        let mut board = [[0; 9]; 9];
+        let mut rng = StdRng::seed_from_u64(seed);
 
-    #[test]
-    fn it_works() {
-        let result = add(2, 2);
-        assert_eq!(result, 4);
+        Self { seed, board }
+    }
+
+    fn fill_board(&mut board: &mut [[u8; 9]; 9], rng: &mut StdRng) {
+        // fill the board with a valid sudoku using backtracking
     }
 }
