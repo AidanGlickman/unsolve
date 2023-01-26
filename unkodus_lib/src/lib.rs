@@ -5,14 +5,14 @@ use splr::{
 };
 use wasm_bindgen::prelude::*;
 
-struct SudokuBoard {
+pub struct SudokuBoard {
     seed: u64,
     board: [[u8; 9]; 9],
     solver: Solver,
 }
 
 impl SudokuBoard {
-    fn new(seed: u64) -> Self {
+    pub fn new(seed: u64) -> Self {
         let mut board = [[0; 9]; 9];
         let mut rng = StdRng::seed_from_u64(seed);
         // Im not sure if solver is the correct struct for what we want to save, its possible that CNFDescription is better
@@ -29,11 +29,11 @@ impl SudokuBoard {
         // a helper function to fill the board with a random valid sudoku
     }
 
-    fn board_to_cnf(&mut self) {
+    pub fn board_to_cnf(&mut self) {
         // convert the board to a cnf
     }
 
-    fn remove_pos(&mut self, pos: (usize, usize)) {
+    pub fn remove_pos(&mut self, pos: (usize, usize)) {
         // remove a given position from the board
     }
 }
