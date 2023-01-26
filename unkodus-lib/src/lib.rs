@@ -25,8 +25,8 @@ impl SudokuBoard {
         }
     }
 
-    fn fill_board(&mut self) {
-        // fill the board with a valid sudoku using backtracking
+    fn fill_board(&mut board: &mut [[u8; 9]; 9], rng: &mut StdRng) {
+        // a helper function to fill the board with a random valid sudoku
     }
 
     fn board_to_cnf(&mut self) {
@@ -44,7 +44,6 @@ mod tests {
     #[test]
     fn test_create_board() {
         let mut board = SudokuBoard::new(0);
-        board.fill_board();
         board.board_to_cnf();
         board.remove_pos((0, 0));
     }
