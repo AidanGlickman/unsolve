@@ -5,6 +5,12 @@
 
 UnKODUS is a puzzle game where you start with a full sudoku board, and have to continuously eliminate elements while making sure that the solution board stays unique.
 
+## Build & Run
+
+This project uses Rust and WebAssembly. The rust source can be built for the web using `wasm-pack build`. The web app can be built using `npm run build` and run using `npm run serve`.
+
+To run it through the Rust CLI, use `cargo run --release` from within the `unkodus-lib` directory.
+
 ## Team Project Proposal
 Professor: Benjamin Cosman (bcosman)
 
