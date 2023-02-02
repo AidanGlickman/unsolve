@@ -1,9 +1,7 @@
 use rand::prelude::*;
-use splr::{
-    types::{CNFDescription, Instantiate},
-    *,
-};
+
 use wasm_bindgen::prelude::*;
+use z3::{ast, Config, Context, Solver};
 
 pub struct SudokuBoard {
     seed: u64,
@@ -15,8 +13,8 @@ impl SudokuBoard {
     pub fn new(seed: u64) -> Self {
         let mut board = [[0; 9]; 9];
         let mut rng = StdRng::seed_from_u64(seed);
-        // Im not sure if solver is the correct struct for what we want to save, its possible that CNFDescription is better
-        let mut solver = Solver::instantiate(&Config::default(), &CNFDescription::default());
+        let ctx = &Context::new(&Config::default());
+        let solver = Solver::new(ctx);
 
         Self {
             seed,
@@ -29,12 +27,12 @@ impl SudokuBoard {
         // a helper function to fill the board with a random valid sudoku
     }
 
-    pub fn board_to_cnf(&mut self) {
-        // convert the board to a cnf
+    pub fn board_to_smt(&mut self) {
+        // convert the board to a smt
     }
 
-    pub fn remove_pos(&mut self, pos: (usize, usize)) {
-        // remove a given position from the board
+    pub fn remove_pos(&mut self, pos: i32) {
+        // remove the assignment of a value to a position, then verify that the puzzle is still unique
     }
 }
 
@@ -44,7 +42,5 @@ mod tests {
     #[test]
     fn test_create_board() {
         let mut board = SudokuBoard::new(0);
-        board.board_to_cnf();
-        board.remove_pos((0, 0));
     }
 }
