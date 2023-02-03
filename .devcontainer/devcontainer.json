@@ -1,0 +1,15 @@
+{
+	// dev container
+	"name": "UnKODUS Dev",
+	"build": {
+		"dockerfile": "Dockerfile",
+	},
+	"customizations": {
+		"vscode": {
+			"extensions": []
+		}
+	},
+	"forwardPorts": [
+		3000
+	],
+}

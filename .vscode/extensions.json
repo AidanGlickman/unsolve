@@ -1,0 +1,9 @@
+{
+    "recommendations": [
+        "serayuzgur.crates",
+        "rust-lang.rust-analyzer",
+        "dbaeumer.vscode-eslint",
+        "christian-kohler.npm-intellisense",
+        "christian-kohler.path-intellisense"
+    ]
+}
