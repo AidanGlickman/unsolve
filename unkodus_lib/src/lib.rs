@@ -29,6 +29,40 @@ impl SudokuBoard {
 
     pub fn board_to_smt(&mut self) {
         // convert the board to a smt
+        let b = self.board;
+        let s = self.solver;
+        let puzz = [[Int(); 9]; 9];
+        // basic sudoku rules
+        // all values must be between 1 and 9, inclusive
+        for r in (0..9) {
+            for c in (0..9) {
+                s.add(puzz[r][c] >= 1);
+                s.add(puzz[r][c] <= 9);
+            }
+        }
+        // all rows must have distinct values
+        s.add(distinct(puzz[r]));
+        // all cols must have distinct values
+        for c in (0..9) {
+            let mut vec = Vec::new();
+            for r in (0..9) {
+                vec.push(puzz[r][c]);
+            }
+            s.add(distinct(vec));
+        }
+        
+        // all 3x3 subgrids must have distinct values
+        for i in (0..3) {
+            for j in (0..3) {
+                let mut vec = Vec::new();
+                for r in (0..3) {
+                    for c in (0..3) {
+                        vec.push(puzz[3*i + r][3*j + c]);
+                    }
+                }
+                s.add(distinct(vec));
+            }
+        }
     }
 
     pub fn remove_pos(&mut self, pos: i32) {
