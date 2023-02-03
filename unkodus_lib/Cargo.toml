@@ -12,3 +12,4 @@ crate-type = ["cdylib", "rlib"]
 rand = "0.8.5"
 wasm-bindgen = "0.2.78"
 z3 = "0.11.2"
+itertools = "0.10.5"
