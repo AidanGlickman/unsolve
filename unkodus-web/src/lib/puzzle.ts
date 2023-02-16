@@ -3,10 +3,10 @@ import { Solver, Context, AstVector, Bool } from 'z3-solver';
 abstract class Puzzle {
     // Puzzle is the base class for all types of puzzles. It contains the 
     // Z3 solver common methods
-    private seed: number;
-    private Z3: Context | null;
-    private solver: Solver | null;
-    private assertions: AstVector<"main", Bool> | null;
+    protected seed: number;
+    protected Z3: Context | null;
+    protected solver: Solver | null;
+    protected assertions: AstVector<"main", Bool> | null;
 
     constructor(seed: number) {
         this.seed = seed;
@@ -46,7 +46,7 @@ abstract class Puzzle {
         let assertions = this.assertions as AstVector<"main", Bool>;
         let solution = await this.solver.check(assertions);
         if(solution === "unsat" || solution === "unknown"){
-            throw new Error("Solver returned unsat or unknown. This indicates that the puzzle definition is incorrect.");
+            throw new Error("Solver returned unsat or unknown. This indicates that the puzzle definition is fundamentally broken, or a bad assertion was added at some point.");
         }
         let model = this.solver.model();
         // TODO actually add the second constraint and run again
