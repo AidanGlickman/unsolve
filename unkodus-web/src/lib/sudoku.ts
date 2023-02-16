@@ -20,7 +20,7 @@ class Sudoku extends Puzzle {
         let solver = this.solver as Solver;
 
         // Each cell must be between 1 and BOARD_SIZE
-        for(let row of this.cells){
+        for (let row of this.cells){
             for (let cell of row){
                 solver.add(cell.ge(1));
                 solver.add(cell.le(BOARD_SIZE));
@@ -28,21 +28,21 @@ class Sudoku extends Puzzle {
         }
 
         // Values in each row must be unique
-        for(let row of this.cells){
+        for (let row of this.cells){
             solver.add(Z3.Distinct(...row));
         }
 
         // Values in each column must be unique
-        for(let col = 0; col < BOARD_SIZE; col++){
+        for (let col = 0; col < BOARD_SIZE; col++){
             solver.add(Z3.Distinct(...this.cells.map(row => row[col])));
         }
 
         // Values in each box must be unique
-        for(let boxRow = 0; boxRow < BOX_SIZE; boxRow++){
-            for(let boxCol = 0; boxCol < BOX_SIZE; boxCol++){
+        for (let boxRow = 0; boxRow < BOX_SIZE; boxRow++){
+            for (let boxCol = 0; boxCol < BOX_SIZE; boxCol++){
                 let boxCells = [];
-                for(let row = 0; row < BOX_SIZE; row++){
-                    for(let col = 0; col < BOX_SIZE; col++){
+                for (let row = 0; row < BOX_SIZE; row++){
+                    for (let col = 0; col < BOX_SIZE; col++){
                         boxCells.push(this.cells[boxRow * BOX_SIZE + row][boxCol * BOX_SIZE + col]);
                     }
                 }
