@@ -30,11 +30,7 @@ abstract class Puzzle {
 
     abstract addAssertions(): void;
     // addAssertions is where we add puzzle conditions, think actual filled numbers in a
-    // sudoku puzzle
-
-    abstract generateSolution(): void;
-    // generateSolution is where we generate a solution to the puzzle, based off of the seed. This can be 
-    // by selecting a predefined solution from somewhere, or by generating a random solution
+    // sudoku puzzle. Seed is used to generate the puzzle
 
     public async checkUniqueness(): Promise<boolean> {
         // checkUniqueness checks if the puzzle is unique. This is done by adding a new constraint
