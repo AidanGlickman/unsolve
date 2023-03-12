@@ -1,4 +1,4 @@
-import { init } from 'z3-solver';
+import { init } from 'z3-solver/build/browser';
 import { Solver, Context, AstVector, Bool } from 'z3-solver';
 abstract class Puzzle {
     // Puzzle is the base class for all types of puzzles. It contains the 

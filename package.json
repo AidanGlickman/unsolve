@@ -8,7 +8,8 @@
     "build": "tsc && vite build",
     "preview": "vite preview",
     "test": "vitest",
-    "coverage": "vitest --coverage"
+    "coverage": "vitest --coverage",
+    "init-scripts": "mkdir ./public/scripts && cp ./node_modules/coi-serviceworker/coi-serviceworker.min.js ./public/scripts/ && cp node_modules/z3-solver/build/z3-built.* ./public/scripts"
   },
   "dependencies": {
     "coi-serviceworker": "^0.1.6",
