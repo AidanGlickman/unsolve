@@ -52,7 +52,7 @@ class Sudoku extends Puzzle {
     }
 
     addAssertions(): void {
-        throw new Error('Method not implemented.');
+        return;
     }
 }
 

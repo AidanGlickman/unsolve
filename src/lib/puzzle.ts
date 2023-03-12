@@ -45,7 +45,9 @@ abstract class Puzzle {
             throw new Error("Solver returned unsat or unknown. This indicates that the puzzle definition is fundamentally broken, or a bad assertion was added at some point.");
         }
         let model = this.solver.model();
-        // TODO actually add the second constraint and run again
+        // print the model for debugging
+        console.log(model);
+        // let newAssert = 
         return true;
     }
 
