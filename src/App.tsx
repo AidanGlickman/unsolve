@@ -7,6 +7,7 @@ async function genPuzzle(seed: number) {
   const puzzle = new Sudoku(seed);
   await puzzle.init();
   console.log(puzzle);
+  console.log(await puzzle.checkUniqueness());
 }
 
 function App() {
