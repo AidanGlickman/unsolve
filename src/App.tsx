@@ -10,12 +10,14 @@ async function genPuzzle(seed: number) {
 }
 
 function App() {
-  const seed: number = Math.floor(Math.random() * 1000);
+  // initialize the seed. It should be a number between 0 and 1000, but we'll
+  // also want it to change with the input field, so we'll use state.
+  const [seed, setSeed] = useState<number>(Math.floor(Math.random() * 1000));
 
   return (
     <div className="App">
       <label htmlFor="seed">Seed: </label>
-      <input type="number" defaultValue={seed} />
+      <input type="number" id="seed" name="seed" value={seed} onChange={(e) => setSeed(parseInt(e.target.value))} />
       <button onClick={() => genPuzzle(seed)}>Generate Puzzle</button>
 
     </div>
