@@ -1,4 +1,4 @@
-import { Arith, Solver, Context } from 'z3-solver';
+import { Arith, Ast } from 'z3-solver';
 import Puzzle from './puzzle';
 
 const BOARD_SIZE = 9;
@@ -12,7 +12,7 @@ class Sudoku extends Puzzle {
 
     public async init(): Promise<void> {
         await super.init();
-        if (this.Z3 === null || this.solver === null || this.assertions === null) {
+        if (this.Z3 === null || this.solver === null || this.assertionsMap === null) {
             throw new Error("Z3 not initialized");
         }
 
@@ -22,6 +22,7 @@ class Sudoku extends Puzzle {
         this.addConstraints();
         await this.addAssertions();
     }
+
     addConstraints(): void {
         if (this.solver === null || this.Z3 === null) {
             throw new Error("Solver not initialized");
@@ -79,6 +80,44 @@ class Sudoku extends Puzzle {
                 this.assertionsMap.set(cell, value);
             }
         }
+    }
+
+    public removeAssertion(val: [number, number]): void {
+        if(this.assertionsMap === null){
+            throw new Error("Solver not initialized");
+        }
+        let key = this.cells[val[0]][val[1]];
+
+        if(!this.assertionsMap.has(key)) throw new Error("No such assertion to delete");
+        this.assertionsMap.delete(key);
+    }
+
+    public boardToString(): string {
+        if(this.assertionsMap === null || this.Z3 === null){
+            throw new Error("Solver not initialized");
+        }
+        let board = "";
+        for(let i = 0; i < BOARD_SIZE; i++){
+            let row = "";
+            for(let j = 0; j < BOARD_SIZE; j++){
+                let cell = this.cells[i][j];
+                let valString;
+                if(this.assertionsMap.has(cell)){
+                    let value = this.assertionsMap.get(cell);
+                    valString = value?.toString();
+                }
+                else valString = "_";
+                row += valString + " ";
+                if(j % 3 === 2){
+                    row += "| ";
+                }
+            }
+            board += row + "\n";
+            if(i % 3 === 2){
+                board += "---------------------\n";
+            }
+        }
+        return board;
     }
 }
 

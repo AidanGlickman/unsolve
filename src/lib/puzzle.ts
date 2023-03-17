@@ -1,5 +1,5 @@
 import { init } from 'z3-solver/build/browser';
-import { Solver, Context, AstVector, AstMap, Bool, Arith } from 'z3-solver';
+import { Solver, Context, AstVector, AstMap, Ast, Bool, Arith } from 'z3-solver';
 abstract class Puzzle {
     // Puzzle is the base class for all types of puzzles. It contains the 
     // Z3 solver common methods
@@ -50,6 +50,9 @@ abstract class Puzzle {
     abstract addAssertions(): void;
     // addAssertions is where we add puzzle conditions, think actual filled numbers in a
     // sudoku puzzle. Seed is used to generate the puzzle
+
+    abstract removeAssertion(val: any): void;
+    // removeAssertion removes an assertion from the solver
 
     public async checkUniqueness(): Promise<boolean> {
         // checkUniqueness checks if the puzzle is unique. This is done by adding a new constraint

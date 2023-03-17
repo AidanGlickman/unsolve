@@ -6,8 +6,9 @@ import Sudoku from './lib/sudoku';
 async function genPuzzle(seed: number) {
   const puzzle = new Sudoku(seed);
   await puzzle.init();
-  console.log(puzzle);
-  console.log(await puzzle.checkUniqueness());
+  console.log(puzzle.boardToString());
+  puzzle.removeAssertion([1, 1]);
+  console.log(puzzle.boardToString());
 }
 
 function App() {
