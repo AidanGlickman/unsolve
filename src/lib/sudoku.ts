@@ -12,29 +12,37 @@ class Sudoku extends Puzzle {
 
     public async init(): Promise<void> {
         await super.init();
-        let Z3 = this.Z3 as Context;
-        let cells = Array.from({ length: BOARD_SIZE }, (_, col) => Array.from({ length: BOARD_SIZE }, (_, row) => Z3.Int.const(`c_${row}_${col}`)));
+        if (this.Z3 === null || this.solver === null || this.assertions === null) {
+            throw new Error("Z3 not initialized");
+        }
+
+        let cells = Array.from({ length: BOARD_SIZE }, (_, col) => Array.from({ length: BOARD_SIZE }, (_, row) => this.Z3.Int.const(`c_${row}_${col}`)));
+        this.cells = cells;
+
+        this.addConstraints();
+        await this.addAssertions();
     }
     addConstraints(): void {
-        let Z3 = this.Z3 as Context;
-        let solver = this.solver as Solver;
+        if (this.solver === null || this.Z3 === null) {
+            throw new Error("Solver not initialized");
+        }
 
         // Each cell must be between 1 and BOARD_SIZE
         for (let row of this.cells){
             for (let cell of row){
-                solver.add(cell.ge(1));
-                solver.add(cell.le(BOARD_SIZE));
+                this.solver.add(cell.ge(1));
+                this.solver.add(cell.le(BOARD_SIZE));
             }
         }
 
         // Values in each row must be unique
         for (let row of this.cells){
-            solver.add(Z3.Distinct(...row));
+            this.solver.add(this.Z3.Distinct(...row));
         }
 
         // Values in each column must be unique
         for (let col = 0; col < BOARD_SIZE; col++){
-            solver.add(Z3.Distinct(...this.cells.map(row => row[col])));
+            this.solver.add(this.Z3.Distinct(...this.cells.map(row => row[col])));
         }
 
         // Values in each box must be unique
@@ -46,13 +54,31 @@ class Sudoku extends Puzzle {
                         boxCells.push(this.cells[boxRow * BOX_SIZE + row][boxCol * BOX_SIZE + col]);
                     }
                 }
-                solver.add(Z3.Distinct(...boxCells));
+                this.solver.add(this.Z3.Distinct(...boxCells));
             }
         }
     }
 
-    addAssertions(): void {
-        return;
+    async addAssertions(): Promise<void> {
+        // TODO make the seed actually do something
+        if (this.solver === null || this.Z3 === null || this.assertionsMap === null) {
+            throw new Error("Solver not initialized");
+        }
+        let solution = await this.solver.check();
+        if (solution === "unsat" || solution === "unknown") {
+            throw new Error("Solver returned unsat or unknown. This indicates that the puzzle definition is fundamentally broken, or a bad assertion was added at some point.");
+        }
+        console.log(solution);
+        let model = this.solver.model();
+        // print the model for debugging
+        console.log(model);
+        // set values in assertions
+        for (let row of this.cells){
+            for (let cell of row){
+                let value = model.get(cell) as Arith;
+                this.assertionsMap.set(cell, value);
+            }
+        }
     }
 }
 
