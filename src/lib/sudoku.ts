@@ -108,12 +108,12 @@ class Sudoku extends Puzzle {
                 }
                 else valString = "_";
                 row += valString + " ";
-                if(j % 3 === 2){
+                if(j % BOX_SIZE === BOX_SIZE - 1){
                     row += "| ";
                 }
             }
             board += row + "\n";
-            if(i % 3 === 2){
+            if(i % BOX_SIZE === BOX_SIZE - 1){
                 board += "---------------------\n";
             }
         }
