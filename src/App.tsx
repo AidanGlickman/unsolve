@@ -1,32 +1,27 @@
 import { useState } from 'react'
 import reactLogo from './assets/react.svg'
 import './App.css'
+import Sudoku from './lib/sudoku';
+
+async function genPuzzle(seed: number) {
+  const puzzle = new Sudoku(seed);
+  await puzzle.init();
+  console.log(puzzle.boardToString());
+  puzzle.removeAssertion([1, 1]);
+  console.log(puzzle.boardToString());
+}
 
 function App() {
-  const [count, setCount] = useState(0)
+  // initialize the seed. It should be a number between 0 and 1000, but we'll
+  // also want it to change with the input field, so we'll use state.
+  const [seed, setSeed] = useState<number>(Math.floor(Math.random() * 1000));
 
   return (
     <div className="App">
-      <div>
-        <a href="https://vitejs.dev" target="_blank">
-          <img src="/vite.svg" className="logo" alt="Vite logo" />
-        </a>
-        <a href="https://reactjs.org" target="_blank">
-          <img src={reactLogo} className="logo react" alt="React logo" />
-        </a>
-      </div>
-      <h1>Vite + React</h1>
-      <div className="card">
-        <button onClick={() => setCount((count) => count + 1)}>
-          count is {count}
-        </button>
-        <p>
-          Edit <code>src/App.tsx</code> and save to test HMR
-        </p>
-      </div>
-      <p className="read-the-docs">
-        Click on the Vite and React logos to learn more
-      </p>
+      <label htmlFor="seed">Seed: </label>
+      <input type="number" id="seed" name="seed" value={seed} onChange={(e) => setSeed(parseInt(e.target.value))} />
+      <button onClick={() => genPuzzle(seed)}>Generate Puzzle</button>
+
     </div>
   )
 }
