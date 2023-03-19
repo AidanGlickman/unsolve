@@ -1,0 +1,39 @@
+@import "../main.scss";
+
+.sudoku-grid {
+    border: 2px solid $sudoku-border-color;
+    display: inline-block;
+    margin-bottom: 2rem;
+}
+
+.sudoku-row {
+    margin: 0 !important;
+}
+
+.sudoku-cell {
+    background-color: $sudoku-background-color;
+    display: inline-block;
+    color: $sudoku-text-color;
+    width: 2em;
+    height: 2em;
+    font-size: 24px;
+    border: 1px solid $sudoku-border-color;
+    margin: 0;
+
+    &.bottom {
+        border-bottom: 3px solid $sudoku-border-color;
+    }
+
+    &.right {
+        border-right: 3px solid $sudoku-border-color;
+    }
+}
+
+.sudoku-cell-contents {
+    width: 100%;
+    height: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-weight: bold;
+}

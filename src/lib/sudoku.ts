@@ -1,9 +1,10 @@
 import { Arith, Context } from 'z3-solver';
 import Puzzle from './puzzle';
 
-const BOARD_SIZE = 9;
-const BOX_SIZE = 3;
-class Sudoku extends Puzzle {
+export const BOARD_SIZE = 9;
+export const BOX_SIZE = 3;
+
+export class Sudoku extends Puzzle {
     private cells: Arith[][];
     constructor(seed: number) {
         super(seed);
@@ -122,6 +123,23 @@ class Sudoku extends Puzzle {
         }
         return board;
     }
-}
 
-export default Sudoku;
+    public getCellText(): string[][] {
+        let cellText: string[][] = []
+        for (let rowIndex = 0; rowIndex < BOARD_SIZE; rowIndex++) {
+            cellText.push([])
+            for (let colIndex = 0; colIndex < BOARD_SIZE; colIndex++) {
+                let cell = this.cells[rowIndex][colIndex];
+                let valString = "d";
+                if (this.assertionsMap?.has(cell)) {
+                    let value = this.assertionsMap.get(cell);
+                    if (value) {
+                        valString = value.toString();
+                    }
+                }
+                cellText[cellText.length - 1].push(valString)
+            }
+        }
+        return cellText;
+    }
+}
