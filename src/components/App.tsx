@@ -24,6 +24,9 @@ function App() {
 
   return (
     <div className="app">
+      <div className="title">
+        <h1><em>un</em>solve</h1>
+      </div>
       <div className="sudoku-grid-wrapper">
         <SudokuGrid
           cells={cells}
