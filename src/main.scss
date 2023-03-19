@@ -1,0 +1,18 @@
+$sudoku-text-color: #111;
+$sudoku-border-color: #111;
+$sudoku-background-color: #eee;
+$background-color: #333;
+$darker-background-color: darken($background-color, 20%);
+$lighter-background-color: lighten($background-color, 20%);
+$text-color: #eee;
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    background-color: $background-color;
+    color: $text-color;
+}
