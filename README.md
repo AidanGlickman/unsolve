@@ -5,6 +5,16 @@
 
 Unsolve is a puzzle game where you start with a full sudoku board, and have to continuously eliminate elements while making sure that the solution board stays unique.
 
+## Development
+For some reason, Safari doesn't seem to work in the dev environment with SharedArrayBuffer. When developing, use Chrome. This does not effect the production build.
+
+## Deployment
+This app depends on Service Workers having access to shared memory, and therefore requires a SharedArrayBuffer. Make sure the web app is served with the following headers:
+```
+Cross-Origin-Embedder-Policy: require-corp
+Cross-Origin-Opener-Policy: same-origin
+```
+
 ## Team Project Proposal
 Professor: Benjamin Cosman (bcosman)
 
