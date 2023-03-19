@@ -12,9 +12,12 @@ class Sudoku extends Puzzle {
 
     public async init(): Promise<void> {
         await super.init();
+        
         if (this.Z3 === null || this.solver === null || this.assertionsMap === null) {
             throw new Error("Z3 not initialized");
         }
+
+        console.log("Z3 initialized");
 
         let Z3 = this.Z3 as Context<"main">; // Not sure why this is necessary, everything else works fine
 
