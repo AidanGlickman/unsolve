@@ -17,8 +17,6 @@ class Sudoku extends Puzzle {
             throw new Error("Z3 not initialized");
         }
 
-        console.log("Z3 initialized");
-
         let Z3 = this.Z3 as Context<"main">; // Not sure why this is necessary, everything else works fine
 
         let cells = Array.from({ length: BOARD_SIZE }, (_, col) => Array.from({ length: BOARD_SIZE }, (_, row) => Z3.Int.const(`c_${row}_${col}`)));
