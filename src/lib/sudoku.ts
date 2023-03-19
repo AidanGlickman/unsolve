@@ -1,4 +1,4 @@
-import { Arith, Ast } from 'z3-solver';
+import { Arith, Context } from 'z3-solver';
 import Puzzle from './puzzle';
 
 const BOARD_SIZE = 9;
@@ -16,7 +16,9 @@ class Sudoku extends Puzzle {
             throw new Error("Z3 not initialized");
         }
 
-        let cells = Array.from({ length: BOARD_SIZE }, (_, col) => Array.from({ length: BOARD_SIZE }, (_, row) => this.Z3.Int.const(`c_${row}_${col}`)));
+        let Z3 = this.Z3 as Context<"main">; // Not sure why this is necessary, everything else works fine
+
+        let cells = Array.from({ length: BOARD_SIZE }, (_, col) => Array.from({ length: BOARD_SIZE }, (_, row) => Z3.Int.const(`c_${row}_${col}`)));
         this.cells = cells;
 
         this.addConstraints();
