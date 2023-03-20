@@ -143,3 +143,5 @@ export class Sudoku extends Puzzle {
         return cellText;
     }
 }
+
+export default Sudoku;
