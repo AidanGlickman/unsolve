@@ -3,6 +3,7 @@ import Puzzle from './puzzle';
 
 export const BOARD_SIZE = 9;
 export const BOX_SIZE = 3;
+const NBSP = '\xa0'; // nonbreaking space
 
 export class Sudoku extends Puzzle {
     private cells: Arith[][];
@@ -86,6 +87,15 @@ export class Sudoku extends Puzzle {
         }
     }
 
+    public hasAssertion(val: [number, number]): boolean {
+        if(this.assertionsMap === null){
+            throw new Error("Solver not initialized");
+        }
+        let key = this.cells[val[0]][val[1]];
+
+        return this.assertionsMap.has(key);
+    }
+
     public removeAssertion(val: [number, number]): void {
         if(this.assertionsMap === null){
             throw new Error("Solver not initialized");
@@ -130,7 +140,7 @@ export class Sudoku extends Puzzle {
             cellText.push([])
             for (let colIndex = 0; colIndex < BOARD_SIZE; colIndex++) {
                 let cell = this.cells[rowIndex][colIndex];
-                let valString = "d";
+                let valString = NBSP;
                 if (this.assertionsMap?.has(cell)) {
                     let value = this.assertionsMap.get(cell);
                     if (value) {
