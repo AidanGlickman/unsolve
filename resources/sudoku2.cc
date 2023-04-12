@@ -24,7 +24,7 @@
 #include <cstdlib>
 
 // #define DEBUG
-// #define PRINT
+#define PRINT
 
 /* bit masks of used numbers for the 9 columns, rows and boxes. */
 static int u[3][9];
@@ -118,6 +118,9 @@ template<> static inline void search<8, 9>()
             std::cout << std::endl;
     }
 #endif
+    if (solutions >= 200){
+        exit(0);
+    }
     solutions++;
     if (solutions % (1<<20) == 0)
         /* progress indicator */
