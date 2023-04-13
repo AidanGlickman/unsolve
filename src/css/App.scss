@@ -13,6 +13,22 @@
     margin-bottom: 1rem;
 }
 
+.instructions {
+    margin-bottom: 0.5rem;
+    color: lightgray;
+
+    &.game-over {
+        color: rgb(245, 139, 157);
+    }
+}
+
+.stats {
+    color: lightgray;
+    margin-bottom: 1rem;
+    font-weight: bold;
+    font-size: 1.5rem;
+}
+
 button {
     border: none;
     cursor: pointer;
