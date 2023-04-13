@@ -25,6 +25,7 @@ export class Sudoku extends Puzzle {
 
         this.addConstraints();
         await this.addAssertions();
+        await this.createOriginalSolutionRestriction();
     }
 
     addConstraints(): void {
