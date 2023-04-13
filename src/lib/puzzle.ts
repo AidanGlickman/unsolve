@@ -8,12 +8,14 @@ abstract class Puzzle {
     protected solver: Solver | null;
     // protected assertions: AstVector<"main", Bool> | null;
     protected assertionsMap: AstMap<"main", Arith, Arith> | null;
+    protected originalSolutionRestriction: Bool | null;
 
     constructor(seed: number) {
         this.seed = seed;
         this.Z3 = null;
         this.solver = null;
         this.assertionsMap = null;
+        this.originalSolutionRestriction = null;
     }
 
     public async init(){
@@ -22,6 +24,23 @@ abstract class Puzzle {
         this.Z3 = Context("main");
         this.solver = new this.Z3.Solver();
         this.assertionsMap = new this.Z3.AstMap<Arith, Arith>();
+    }
+
+    public createOriginalSolutionRestriction(): void {
+        // create a boolean restriction representing the original solution
+        // This is used to check if the puzzle is unique
+        // THIS MUST BE RUN AFTER addAssertions but BEFORE any assertions are removed
+
+        if (this.Z3 === null || this.assertionsMap === null) {
+            throw new Error("Solver not initialized");
+        }
+
+        let assertions = this.getAssertionVector();
+        let orig = this.Z3.Bool.val(true);
+        for(let assertion of assertions){
+            orig = orig.and(assertion);
+        }
+        this.originalSolutionRestriction = orig.not();
     }
 
     public getAssertionVector(): AstVector<"main", Bool> {
@@ -58,29 +77,12 @@ abstract class Puzzle {
         // checkUniqueness checks if the puzzle is unique. This is done by adding a new constraint
         // that the puzzle is not equal to the current solution and then checking if the solver
         // is satisfiable. If it is, then the puzzle is not unique
-        if (this.solver === null || this.Z3 === null || this.assertionsMap === null) {
+        if (this.solver === null || this.Z3 === null || this.assertionsMap === null || this.originalSolutionRestriction === null) {
             throw new Error("Solver not initialized");
         }
         let assertions = this.getAssertionVector();
-        let solution = await this.solver.check(assertions);
-        if(solution === "unsat" || solution === "unknown"){
-            throw new Error("Solver returned unsat or unknown. This indicates that the puzzle definition is fundamentally broken, or a bad assertion was added at some point.");
-        }
-        let model = this.solver.model();
-        // print the model for debugging
-        console.log(model);
-        // create a new constraint that the puzzle is not equal to the current solution
-        let notEqualConstraint = this.Z3.Bool.val(true);
-        for(let key of this.assertionsMap.keys()){
-            let value = this.assertionsMap.get(key);
-            if(value === undefined || value === null){
-                throw new Error("Assertion value is null");
-            }
-            let modelValue = model.get(key) as Arith;
-            notEqualConstraint = notEqualConstraint.and(key.eq(modelValue).not());
-        }
         // add the new constraint to the assertion array
-        assertions.push(notEqualConstraint);
+        assertions.push(this.originalSolutionRestriction);
         // check if the solver is satisfiable
         let newSolution = await this.solver.check(assertions);
         if(newSolution === "sat"){
