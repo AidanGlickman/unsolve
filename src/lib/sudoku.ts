@@ -134,7 +134,17 @@ export class Sudoku extends Puzzle {
         let key = this.cells[val[0]][val[1]];
 
         if(!this.assertionsMap.has(key)) throw new Error("No such assertion to delete");
+        this.removedAssertions.push([key, this.assertionsMap.get(key) as Arith]);
         this.assertionsMap.delete(key);
+    }
+
+    public undo() {
+        if(this.assertionsMap === null){
+            throw new Error("Solver not initialized");
+        }
+        if(this.removedAssertions.length === 0) throw new Error("No assertions to undo");
+        let [key, value] = this.removedAssertions.pop() as [Arith, Arith];
+        this.assertionsMap.set(key, value);
     }
 
     public boardToString(): string {
