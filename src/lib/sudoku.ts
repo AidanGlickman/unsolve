@@ -1,5 +1,7 @@
 import { Arith, Context } from 'z3-solver';
 import Puzzle from './puzzle';
+import MWCRandom from './random';
+import puzzles from '../data/sudoku/puzzles'
 
 export const BOARD_SIZE = 9;
 export const BOX_SIZE = 3;
@@ -84,32 +86,17 @@ export class Sudoku extends Puzzle {
         //         this.assertionsMap.set(cell, value);
         //     }
         // }
-        let puzzSet: number = Math.floor(Math.random() * 71);
-        let numInSet: number = Math.floor(Math.random() * 200);
+        let numInSet: number = Math.floor(this.random.random() * puzzles.length);
+        let puzzle = puzzles[numInSet];
         
-        // let file: string = fs.readFileSync('../puzzlegen/puzzles/'.concat(puzzSet.toString(), ' .txt'), 'utf8');
-        const file: string = await import('../puzzlegen/puzzles/1.txt');
-        let puzzles = file.split('===========');
-        let currPuzz = puzzles[numInSet].split('\n');
-        let board: number[][] = [];
-        for (let i: number = 0; i < 11; i++) {
-            let boardLine: number[] = [];
-            if (i != 3 && i != 7) {
-                for (let j: number = 0; j < 11; j++) {
-                    if (j != 3 && j != 7) {
-                        boardLine.push(j);
-                    }
-                }
-            }
-            board.push(boardLine);
+        for(let i = 0; i < BOARD_SIZE*BOARD_SIZE; i++){
+            let col = i % BOARD_SIZE;
+            let row = Math.floor(i / BOARD_SIZE);
+            let val = puzzle[i];
+            // console.log(row, col);
+            // console.log(puzzle[row][col])
+            this.assertionsMap.set(this.cells[row][col], this.Z3.Int.val(val));
         }
-        console.log(board);
-
-
-
-
-
-
     }
 
     public removeAssertion(val: [number, number]): void {
