@@ -69,21 +69,47 @@ export class Sudoku extends Puzzle {
         if (this.solver === null || this.Z3 === null || this.assertionsMap === null) {
             throw new Error("Solver not initialized");
         }
-        let solution = await this.solver.check();
-        if (solution === "unsat" || solution === "unknown") {
-            throw new Error("Solver returned unsat or unknown. This indicates that the puzzle definition is fundamentally broken, or a bad assertion was added at some point.");
-        }
-        console.log(solution);
-        let model = this.solver.model();
-        // print the model for debugging
-        console.log(model);
-        // set values in assertions
-        for (let row of this.cells){
-            for (let cell of row){
-                let value = model.get(cell) as Arith;
-                this.assertionsMap.set(cell, value);
+        // let solution = await this.solver.check();
+        // if (solution === "unsat" || solution === "unknown") {
+        //     throw new Error("Solver returned unsat or unknown. This indicates that the puzzle definition is fundamentally broken, or a bad assertion was added at some point.");
+        // }
+        // console.log(solution);
+        // let model = this.solver.model();
+        // // print the model for debugging
+        // console.log(model);
+        // // set values in assertions
+        // for (let row of this.cells){
+        //     for (let cell of row){
+        //         let value = model.get(cell) as Arith;
+        //         this.assertionsMap.set(cell, value);
+        //     }
+        // }
+        let puzzSet: number = Math.floor(Math.random() * 71);
+        let numInSet: number = Math.floor(Math.random() * 200);
+        
+        // let file: string = fs.readFileSync('../puzzlegen/puzzles/'.concat(puzzSet.toString(), ' .txt'), 'utf8');
+        const file: string = await import('../puzzlegen/puzzles/1.txt');
+        let puzzles = file.split('===========');
+        let currPuzz = puzzles[numInSet].split('\n');
+        let board: number[][] = [];
+        for (let i: number = 0; i < 11; i++) {
+            let boardLine: number[] = [];
+            if (i != 3 && i != 7) {
+                for (let j: number = 0; j < 11; j++) {
+                    if (j != 3 && j != 7) {
+                        boardLine.push(j);
+                    }
+                }
             }
+            board.push(boardLine);
         }
+        console.log(board);
+
+
+
+
+
+
     }
 
     public removeAssertion(val: [number, number]): void {
