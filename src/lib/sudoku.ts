@@ -90,15 +90,32 @@ export class Sudoku extends Puzzle {
         // }
         let numInSet: number = Math.floor(this.random.random() * puzzles.length);
         let puzzle = puzzles[numInSet];
+
+        puzzle = this.randomSwaps(puzzle);
         
         for(let i = 0; i < BOARD_SIZE*BOARD_SIZE; i++){
             let col = i % BOARD_SIZE;
             let row = Math.floor(i / BOARD_SIZE);
             let val = puzzle[i];
-            // console.log(row, col);
-            // console.log(puzzle[row][col])
             this.assertionsMap.set(this.cells[row][col], this.Z3.Int.val(val));
         }
+    }
+
+    private randomSwaps(puzzle: string){
+        // generate a random mapping between numbers 1-9 and numbers 1-9
+        let mapping = new Map<number, number>();
+        let numbers = [1, 2, 3, 4, 5, 6, 7, 8, 9];
+        for(let i = 0; i < 9; i++){
+            let num = numbers.splice(Math.floor(this.random.random() * numbers.length), 1)[0];
+            mapping.set(i+1, num);
+        }
+        // swap the numbers in the puzzle
+        let newPuzzle = "";
+        for(let i = 0; i < BOARD_SIZE*BOARD_SIZE; i++){
+            let val = puzzle[i];
+            newPuzzle += mapping.get(parseInt(val))?.toString();
+        }
+        return newPuzzle;
     }
 
     public hasAssertion(val: [number, number]): boolean {
