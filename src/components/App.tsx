@@ -49,6 +49,18 @@ function App() {
         }
     }
 
+    function startGame() {
+        // reset everything
+        setSudoku(undefined);
+        setCells(getDefaultCells());
+        setFrozen(true);
+        setNumbersRemoved(0);
+        setGameOver(false);
+
+        // generate a puzzle
+        genPuzzle(seed)
+    }
+
     return (
         <div className="app">
             <div className="title">
@@ -78,7 +90,7 @@ function App() {
                     <label htmlFor="seed">Seed:</label>
                     <input type="number" id="seed" name="seed" value={seed} onChange={(e) => setSeed(parseInt(e.target.value))} />
                 </div>
-                <button onClick={() => genPuzzle(seed)}>Generate Puzzle</button>
+                <button onClick={() => startGame()}>Generate Puzzle</button>
             </div>
         </div>
     )
