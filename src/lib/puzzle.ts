@@ -1,9 +1,10 @@
 import { init } from 'z3-solver/build/browser';
 import { Solver, Context, AstVector, AstMap, Ast, Bool, Arith } from 'z3-solver';
+import MWCRandom from './random';
 abstract class Puzzle {
     // Puzzle is the base class for all types of puzzles. It contains the 
     // Z3 solver common methods
-    protected seed: number;
+    protected random: MWCRandom;
     protected Z3: Context | null;
     protected solver: Solver | null;
     // protected assertions: AstVector<"main", Bool> | null;
@@ -11,7 +12,7 @@ abstract class Puzzle {
     protected originalSolutionRestriction: Bool | null;
 
     constructor(seed: number) {
-        this.seed = seed;
+        this.random = new MWCRandom(seed);
         this.Z3 = null;
         this.solver = null;
         this.assertionsMap = null;

@@ -1,5 +1,7 @@
 import { Arith, Context } from 'z3-solver';
 import Puzzle from './puzzle';
+import MWCRandom from './random';
+import puzzles from '../data/sudoku/puzzles'
 
 export const BOARD_SIZE = 9;
 export const BOX_SIZE = 3;
@@ -71,20 +73,31 @@ export class Sudoku extends Puzzle {
         if (this.solver === null || this.Z3 === null || this.assertionsMap === null) {
             throw new Error("Solver not initialized");
         }
-        let solution = await this.solver.check();
-        if (solution === "unsat" || solution === "unknown") {
-            throw new Error("Solver returned unsat or unknown. This indicates that the puzzle definition is fundamentally broken, or a bad assertion was added at some point.");
-        }
-        console.log(solution);
-        let model = this.solver.model();
-        // print the model for debugging
-        console.log(model);
-        // set values in assertions
-        for (let row of this.cells){
-            for (let cell of row){
-                let value = model.get(cell) as Arith;
-                this.assertionsMap.set(cell, value);
-            }
+        // let solution = await this.solver.check();
+        // if (solution === "unsat" || solution === "unknown") {
+        //     throw new Error("Solver returned unsat or unknown. This indicates that the puzzle definition is fundamentally broken, or a bad assertion was added at some point.");
+        // }
+        // console.log(solution);
+        // let model = this.solver.model();
+        // // print the model for debugging
+        // console.log(model);
+        // // set values in assertions
+        // for (let row of this.cells){
+        //     for (let cell of row){
+        //         let value = model.get(cell) as Arith;
+        //         this.assertionsMap.set(cell, value);
+        //     }
+        // }
+        let numInSet: number = Math.floor(this.random.random() * puzzles.length);
+        let puzzle = puzzles[numInSet];
+        
+        for(let i = 0; i < BOARD_SIZE*BOARD_SIZE; i++){
+            let col = i % BOARD_SIZE;
+            let row = Math.floor(i / BOARD_SIZE);
+            let val = puzzle[i];
+            // console.log(row, col);
+            // console.log(puzzle[row][col])
+            this.assertionsMap.set(this.cells[row][col], this.Z3.Int.val(val));
         }
     }
 
