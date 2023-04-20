@@ -7,8 +7,8 @@ abstract class Puzzle {
     protected random: MWCRandom;
     protected Z3: Context | null;
     protected solver: Solver | null;
-    // protected assertions: AstVector<"main", Bool> | null;
     protected assertionsMap: AstMap<"main", Arith, Arith> | null;
+    protected removedAssertions: [Arith, Arith][] = [];
     protected originalSolutionRestriction: Bool | null;
 
     constructor(seed: number) {
@@ -73,6 +73,9 @@ abstract class Puzzle {
 
     abstract removeAssertion(val: any): void;
     // removeAssertion removes an assertion from the solver
+
+    abstract undo(): void;
+    // undo undoes the last removal
 
     public async checkUniqueness(): Promise<boolean> {
         // checkUniqueness checks if the puzzle is unique. This is done by adding a new constraint

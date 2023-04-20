@@ -1,7 +1,7 @@
 @import '../main.scss';
 
 .app {
-    // max-width: 800px;
+    max-width: 800px;
     // margin: auto;
     font-family: 'SF Pro', Arial, Helvetica, sans-serif;
     margin: auto;
@@ -39,6 +39,22 @@ button {
     color: $text-color;
     background-color: $darker-background-color;
     font-weight: bold;
+
+    &:disabled {
+        cursor: default;
+        opacity: 0.5;
+    }
+}
+
+.sudoku-grid-wrapper {
+    display: flex;
+    gap: 0.5rem;
+    margin: auto;
+    margin-top: -2rem;
+    width: fit-content;
+    flex-flow: column wrap;
+    align-items: flex-end;
+    justify-content: right;
 }
 
 .generation-settings {

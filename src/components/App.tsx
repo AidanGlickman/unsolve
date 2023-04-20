@@ -61,6 +61,20 @@ function App() {
         genPuzzle(seed)
     }
 
+    function canUndo() {
+        return sudoku && numbersRemoved > 0 && !gameOver;
+    }
+
+    function undo() {
+        if (!sudoku) {
+            return;
+        }
+
+        sudoku.undo();
+        setCells(sudoku.getCellText());
+        setNumbersRemoved(numbersRemoved - 1);
+    }
+
     return (
         <div className="app">
             <div className="title">
@@ -79,6 +93,12 @@ function App() {
                 Score: {numbersRemoved}
             </div>
             <div className="sudoku-grid-wrapper">
+                <button
+                    className="undo-button"
+                    onClick={() => undo()}
+                    disabled={!canUndo()}>
+                    Undo
+                </button>
                 <SudokuGrid
                     cells={cells}
                     frozen={frozen}
