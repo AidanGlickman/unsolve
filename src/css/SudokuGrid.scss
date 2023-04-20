@@ -16,7 +16,7 @@
     color: $sudoku-text-color;
     width: 2em;
     height: 2em;
-    font-size: 24px;
+    font-size: min(5vw, 24px);
     border-radius: 0;
     border: 1px solid $sudoku-border-color;
     margin: 0;

@@ -5,6 +5,7 @@
     // margin: auto;
     font-family: 'SF Pro', Arial, Helvetica, sans-serif;
     margin: auto;
+    padding: 0.5rem;
     text-align: center;
     margin-top: 2rem;
 }
@@ -59,9 +60,11 @@ button {
 
 .generation-settings {
     display: flex;
+    flex-flow: row wrap;
     align-items: center;
     justify-content: center;
     gap: 1rem;
+
 }
 
 .seed-input {
