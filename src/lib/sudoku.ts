@@ -1,11 +1,10 @@
-import { Arith, Context } from 'z3-solver';
-import Puzzle from './puzzle';
+import { Arith, Context, Model } from 'z3-solver';
+import Puzzle, { UniquenessResult } from './puzzle';
 import MWCRandom from './random';
 import puzzles from '../data/sudoku/puzzles_17' // puzzles with 17 clue minimal solutions, for more standardized difficulty
 
 export const BOARD_SIZE = 9;
 export const BOX_SIZE = 3;
-const NBSP = '\xa0'; // nonbreaking space
 
 export class Sudoku extends Puzzle {
     private cells: Arith[][];
@@ -108,6 +107,7 @@ export class Sudoku extends Puzzle {
         let minimal = pair[1];
         let newPuzzle = "";
         let newMinimal = "";
+        
         for (let i = 0; i < BOARD_SIZE * BOARD_SIZE; i++) {
             let val = puzzle[i];
             newPuzzle += mapping.get(parseInt(val))?.toString();
@@ -181,7 +181,7 @@ export class Sudoku extends Puzzle {
             cellText.push([])
             for (let colIndex = 0; colIndex < BOARD_SIZE; colIndex++) {
                 let cell = this.cells[rowIndex][colIndex];
-                let valString = NBSP;
+                let valString = '';
                 if (this.assertionsMap?.has(cell)) {
                     let value = this.assertionsMap.get(cell);
                     if (value) {
@@ -192,6 +192,22 @@ export class Sudoku extends Puzzle {
             }
         }
         return cellText;
+    }
+
+    public modelToGrid(model: Model<'main'>): string[][] {
+        let counter: string[][] = [];
+        // loop through the counter example and add the values to the counter array
+        for (let i = 0; i < BOARD_SIZE; i++) {
+            counter.push([]);
+            for (let j = 0; j < BOARD_SIZE; j++) {
+                let cell = this.cells[i][j];
+                let val = model.get(cell);
+                if (val) {
+                    counter[i].push(val.toString());
+                }
+            }
+        }
+        return counter;
     }
 }
 

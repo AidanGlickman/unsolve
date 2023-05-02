@@ -42,4 +42,13 @@
     justify-content: center;
     align-items: center;
     font-weight: bold;
+
+    &.faded {
+        opacity: 20%;
+    }
+
+    &.wrong {
+        color: $wrong-color;
+        opacity: 100% !important;
+    }
 }
