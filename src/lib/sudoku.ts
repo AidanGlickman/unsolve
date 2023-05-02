@@ -3,6 +3,8 @@ import Puzzle, { UniquenessResult } from './puzzle';
 import MWCRandom from './random';
 import puzzles from '../data/sudoku/puzzles_17' // puzzles with 17 clue minimal solutions, for more standardized difficulty
 
+const NBSP = '\xa0'; // nonbreaking space
+
 export const BOARD_SIZE = 9;
 export const BOX_SIZE = 3;
 
@@ -107,7 +109,7 @@ export class Sudoku extends Puzzle {
         let minimal = pair[1];
         let newPuzzle = "";
         let newMinimal = "";
-        
+
         for (let i = 0; i < BOARD_SIZE * BOARD_SIZE; i++) {
             let val = puzzle[i];
             newPuzzle += mapping.get(parseInt(val))?.toString();
