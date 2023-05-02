@@ -2,7 +2,7 @@ import { init } from 'z3-solver/build/browser';
 import { Solver, Context, AstVector, AstMap, Ast, Bool, Arith, Model } from 'z3-solver';
 import MWCRandom from './random';
 
-export type uniquenessResult = {
+export type UniquenessResult = {
     unique: boolean,
     counterExample: Model<"main"> | null
 }

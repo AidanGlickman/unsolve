@@ -1,5 +1,5 @@
 import { Arith, Context, Model } from 'z3-solver';
-import Puzzle, { uniquenessResult } from './puzzle';
+import Puzzle, { UniquenessResult } from './puzzle';
 import MWCRandom from './random';
 import puzzles from '../data/sudoku/puzzles'
 
