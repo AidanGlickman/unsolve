@@ -1,7 +1,7 @@
 import { Arith, Context } from 'z3-solver';
 import Puzzle from './puzzle';
 import MWCRandom from './random';
-import puzzles from '../data/sudoku/puzzles_equiv'
+import puzzles from '../data/sudoku/puzzles_17' // puzzles with 17 clue minimal solutions, for more standardized difficulty
 
 export const BOARD_SIZE = 9;
 export const BOX_SIZE = 3;
@@ -17,7 +17,7 @@ export class Sudoku extends Puzzle {
         for (let i = 0; i < BOARD_SIZE; i++) {
             this.minForm.push([]);
             for (let j = 0; j < BOARD_SIZE; j++) {
-                this.minForm[i].push('.');
+                this.minForm[i].push(NBSP);
             }
         }
     }
