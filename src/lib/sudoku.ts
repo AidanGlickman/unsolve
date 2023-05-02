@@ -1,7 +1,7 @@
 import { Arith, Context } from 'z3-solver';
 import Puzzle from './puzzle';
 import MWCRandom from './random';
-import puzzles from '../data/sudoku/puzzles'
+import puzzles from '../data/sudoku/puzzles_equiv'
 
 export const BOARD_SIZE = 9;
 export const BOX_SIZE = 3;
