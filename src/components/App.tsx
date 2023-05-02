@@ -15,6 +15,7 @@ function App() {
     const [seed, setSeed] = useState<number>(Math.floor(Math.random() * 1000));
     const [sudoku, setSudoku] = useState<Sudoku>();
     const [cells, setCells] = useState(getDefaultCells());
+    const [originalCells, setOriginalCells] = useState(getDefaultCells());
     const [frozen, setFrozen] = useState(true);
     const [numbersRemoved, setNumbersRemoved] = useState(0);
     const [gameOver, setGameOver] = useState(false);
@@ -25,7 +26,8 @@ function App() {
         await puzzle.init();
         setFrozen(false);
         setSudoku(puzzle);
-        setCells(puzzle.getCellText())
+        setCells(puzzle.getCellText());
+        setOriginalCells(puzzle.getCellText());
     }
 
     async function eraseCell(row: number, col: number) {
@@ -103,6 +105,7 @@ function App() {
                 </button>
                 <SudokuGrid
                     cells={cells}
+                    originalCells={originalCells}
                     frozen={frozen}
                     onClickCell={eraseCell}
                 />

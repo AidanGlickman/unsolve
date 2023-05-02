@@ -5,7 +5,6 @@ import puzzles from '../data/sudoku/puzzles'
 
 export const BOARD_SIZE = 9;
 export const BOX_SIZE = 3;
-const NBSP = '\xa0'; // nonbreaking space
 
 export class Sudoku extends Puzzle {
     private cells: Arith[][];
@@ -165,7 +164,7 @@ export class Sudoku extends Puzzle {
             cellText.push([])
             for (let colIndex = 0; colIndex < BOARD_SIZE; colIndex++) {
                 let cell = this.cells[rowIndex][colIndex];
-                let valString = NBSP;
+                let valString = '';
                 if (this.assertionsMap?.has(cell)) {
                     let value = this.assertionsMap.get(cell);
                     if (value) {
