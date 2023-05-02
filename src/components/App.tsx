@@ -42,8 +42,9 @@ function App() {
         setCells(sudoku.getCellText());
         setFrozen(true);
         const isUnique = await sudoku.checkUniqueness();
-        if (!isUnique.unique) {
-            console.log(isUnique.counterExample)
+        if (!isUnique.unique && isUnique.counterExample !== null) {
+            const counterEx = sudoku.modelToGrid(isUnique.counterExample);
+            console.log(counterEx);
             setGameOver(true);
         } else {
             setFrozen(false);

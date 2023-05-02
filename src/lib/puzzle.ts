@@ -4,7 +4,7 @@ import MWCRandom from './random';
 
 export type uniquenessResult = {
     unique: boolean,
-    counterExample: Model<"main"> | any
+    counterExample: Model<"main"> | null
 }
 abstract class Puzzle {
     // Puzzle is the base class for all types of puzzles. It contains the 

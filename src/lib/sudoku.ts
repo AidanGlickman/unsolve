@@ -178,25 +178,20 @@ export class Sudoku extends Puzzle {
         return cellText;
     }
 
-    public async checkUniqueness(): Promise<uniquenessResult> {
-        let result = await super.checkUniqueness();
-        let resultCounter = result.counterExample as Model<"main">;
-        if (result.unique) return result;
-        else {
-            let counter: string[][] = [];
-            // loop through the counter example and add the values to the counter array
-            for (let i = 0; i < BOARD_SIZE; i++) {
-                counter.push([]);
-                for (let j = 0; j < BOARD_SIZE; j++) {
-                    let cell = this.cells[i][j];
-                    let val = resultCounter.get(cell);
-                    if (val) {
-                        counter[i].push(val.toString());
-                    }
+    public modelToGrid(model: Model<'main'>): string[][] {
+        let counter: string[][] = [];
+        // loop through the counter example and add the values to the counter array
+        for (let i = 0; i < BOARD_SIZE; i++) {
+            counter.push([]);
+            for (let j = 0; j < BOARD_SIZE; j++) {
+                let cell = this.cells[i][j];
+                let val = model.get(cell);
+                if (val) {
+                    counter[i].push(val.toString());
                 }
             }
-            return { unique: false, counterExample: counter };
         }
+        return counter;
     }
 }
 
