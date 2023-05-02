@@ -42,7 +42,8 @@ function App() {
         setCells(sudoku.getCellText());
         setFrozen(true);
         const isUnique = await sudoku.checkUniqueness();
-        if (!isUnique) {
+        if (!isUnique.unique) {
+            console.log(isUnique.counterExample)
             setGameOver(true);
         } else {
             setFrozen(false);
@@ -81,12 +82,12 @@ function App() {
                 <h1><em>un</em>solve</h1>
             </div>
             <div className={"instructions" + (gameOver ? " game-over" : "")}>
-                {gameOver ? 
+                {gameOver ?
                     "Game over! The solution is not unique!"
-                : sudoku ?
-                    "Click on any square to remove its number.\nKeep the solution unique!"
-                :
-                    'Click "Generate Puzzle" to start a new game.'
+                    : sudoku ?
+                        "Click on any square to remove its number.\nKeep the solution unique!"
+                        :
+                        'Click "Generate Puzzle" to start a new game.'
                 }
             </div>
             <div className="stats">

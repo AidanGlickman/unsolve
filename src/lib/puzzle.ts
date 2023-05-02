@@ -1,6 +1,11 @@
 import { init } from 'z3-solver/build/browser';
-import { Solver, Context, AstVector, AstMap, Ast, Bool, Arith } from 'z3-solver';
+import { Solver, Context, AstVector, AstMap, Ast, Bool, Arith, Model } from 'z3-solver';
 import MWCRandom from './random';
+
+export type uniquenessResult = {
+    unique: boolean,
+    counterExample: Model<"main"> | any
+}
 abstract class Puzzle {
     // Puzzle is the base class for all types of puzzles. It contains the 
     // Z3 solver common methods
@@ -19,7 +24,7 @@ abstract class Puzzle {
         this.originalSolutionRestriction = null;
     }
 
-    public async init(){
+    public async init() {
         // init the Z3 solver
         let { Context, em } = await init();
         this.Z3 = Context("main");
@@ -38,7 +43,7 @@ abstract class Puzzle {
 
         let assertions = this.getAssertionVector();
         let orig = this.Z3.Bool.val(true);
-        for(let assertion of assertions){
+        for (let assertion of assertions) {
             orig = orig.and(assertion);
         }
         this.originalSolutionRestriction = orig.not();
@@ -51,9 +56,9 @@ abstract class Puzzle {
         }
 
         let assertions = new this.Z3.AstVector<Bool>();
-        for(let key of this.assertionsMap.keys()){
+        for (let key of this.assertionsMap.keys()) {
             let value = this.assertionsMap.get(key);
-            if(value === undefined || value === null){
+            if (value === undefined || value === null) {
                 throw new Error("Assertion value is null");
             }
             assertions.push(key.eq(value));
@@ -77,7 +82,9 @@ abstract class Puzzle {
     abstract undo(): void;
     // undo undoes the last removal
 
-    public async checkUniqueness(): Promise<boolean> {
+
+
+    public async checkUniqueness(): Promise<uniquenessResult> {
         // checkUniqueness checks if the puzzle is unique. This is done by adding a new constraint
         // that the puzzle is not equal to the current solution and then checking if the solver
         // is satisfiable. If it is, then the puzzle is not unique
@@ -89,10 +96,10 @@ abstract class Puzzle {
         assertions.push(this.originalSolutionRestriction);
         // check if the solver is satisfiable
         let newSolution = await this.solver.check(assertions);
-        if(newSolution === "sat"){
-            return false;
+        if (newSolution === "sat") {
+            return { unique: false, counterExample: this.solver.model() };
         }
-        return true;
+        return { unique: true, counterExample: null };
     }
 
 
