@@ -84,7 +84,7 @@ abstract class Puzzle {
 
 
 
-    public async checkUniqueness(): Promise<uniquenessResult> {
+    public async checkUniqueness(): Promise<UniquenessResult> {
         // checkUniqueness checks if the puzzle is unique. This is done by adding a new constraint
         // that the puzzle is not equal to the current solution and then checking if the solver
         // is satisfiable. If it is, then the puzzle is not unique
