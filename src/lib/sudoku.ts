@@ -9,14 +9,22 @@ const NBSP = '\xa0'; // nonbreaking space
 
 export class Sudoku extends Puzzle {
     private cells: Arith[][];
+    minForm: string[][];
     constructor(seed: number) {
         super(seed);
         this.cells = [];
+        this.minForm = [];
+        for (let i = 0; i < BOARD_SIZE; i++) {
+            this.minForm.push([]);
+            for (let j = 0; j < BOARD_SIZE; j++) {
+                this.minForm[i].push('.');
+            }
+        }
     }
 
     public async init(): Promise<void> {
         await super.init();
-        
+
         if (this.Z3 === null || this.solver === null || this.assertionsMap === null) {
             throw new Error("Z3 not initialized");
         }
@@ -37,29 +45,29 @@ export class Sudoku extends Puzzle {
         }
 
         // Each cell must be between 1 and BOARD_SIZE
-        for (let row of this.cells){
-            for (let cell of row){
+        for (let row of this.cells) {
+            for (let cell of row) {
                 this.solver.add(cell.ge(1));
                 this.solver.add(cell.le(BOARD_SIZE));
             }
         }
 
         // Values in each row must be unique
-        for (let row of this.cells){
+        for (let row of this.cells) {
             this.solver.add(this.Z3.Distinct(...row));
         }
 
         // Values in each column must be unique
-        for (let col = 0; col < BOARD_SIZE; col++){
+        for (let col = 0; col < BOARD_SIZE; col++) {
             this.solver.add(this.Z3.Distinct(...this.cells.map(row => row[col])));
         }
 
         // Values in each box must be unique
-        for (let boxRow = 0; boxRow < BOX_SIZE; boxRow++){
-            for (let boxCol = 0; boxCol < BOX_SIZE; boxCol++){
+        for (let boxRow = 0; boxRow < BOX_SIZE; boxRow++) {
+            for (let boxCol = 0; boxCol < BOX_SIZE; boxCol++) {
                 let boxCells = [];
-                for (let row = 0; row < BOX_SIZE; row++){
-                    for (let col = 0; col < BOX_SIZE; col++){
+                for (let row = 0; row < BOX_SIZE; row++) {
+                    for (let col = 0; col < BOX_SIZE; col++) {
                         boxCells.push(this.cells[boxRow * BOX_SIZE + row][boxCol * BOX_SIZE + col]);
                     }
                 }
@@ -73,37 +81,45 @@ export class Sudoku extends Puzzle {
             throw new Error("Solver not initialized");
         }
         let numInSet: number = Math.floor(this.random.random() * puzzles.length);
-        let puzzle = puzzles[numInSet];
+        let pair = puzzles[numInSet];
 
-        puzzle = this.randomSwaps(puzzle);
-        
-        for(let i = 0; i < BOARD_SIZE*BOARD_SIZE; i++){
+        let [puzzle, min] = this.randomSwaps([pair['puzzle'], pair['minimal']]);
+
+        for (let i = 0; i < BOARD_SIZE * BOARD_SIZE; i++) {
             let col = i % BOARD_SIZE;
             let row = Math.floor(i / BOARD_SIZE);
             let val = puzzle[i];
             this.assertionsMap.set(this.cells[row][col], this.Z3.Int.val(val));
+            this.minForm[row][col] = min[i];
         }
+        console.log(this.minForm);
     }
 
-    private randomSwaps(puzzle: string){
+    private randomSwaps(pair: [string, string]): [string, string] {
         // generate a random mapping between numbers 1-9 and numbers 1-9
         let mapping = new Map<number, number>();
         let numbers = [1, 2, 3, 4, 5, 6, 7, 8, 9];
-        for(let i = 0; i < 9; i++){
+        for (let i = 0; i < 9; i++) {
             let num = numbers.splice(Math.floor(this.random.random() * numbers.length), 1)[0];
-            mapping.set(i+1, num);
+            mapping.set(i + 1, num);
         }
         // swap the numbers in the puzzle
+        let puzzle = pair[0];
+        let minimal = pair[1];
         let newPuzzle = "";
-        for(let i = 0; i < BOARD_SIZE*BOARD_SIZE; i++){
+        let newMinimal = "";
+        for (let i = 0; i < BOARD_SIZE * BOARD_SIZE; i++) {
             let val = puzzle[i];
             newPuzzle += mapping.get(parseInt(val))?.toString();
+            val = minimal[i];
+            if (val === '.') newMinimal += '.';
+            else newMinimal += mapping.get(parseInt(val))?.toString();
         }
-        return newPuzzle;
+        return [newPuzzle, newMinimal];
     }
 
     public hasAssertion(val: [number, number]): boolean {
-        if(this.assertionsMap === null){
+        if (this.assertionsMap === null) {
             throw new Error("Solver not initialized");
         }
         let key = this.cells[val[0]][val[1]];
@@ -112,47 +128,47 @@ export class Sudoku extends Puzzle {
     }
 
     public removeAssertion(val: [number, number]): void {
-        if(this.assertionsMap === null){
+        if (this.assertionsMap === null) {
             throw new Error("Solver not initialized");
         }
         let key = this.cells[val[0]][val[1]];
 
-        if(!this.assertionsMap.has(key)) throw new Error("No such assertion to delete");
+        if (!this.assertionsMap.has(key)) throw new Error("No such assertion to delete");
         this.removedAssertions.push([key, this.assertionsMap.get(key) as Arith]);
         this.assertionsMap.delete(key);
     }
 
     public undo() {
-        if(this.assertionsMap === null){
+        if (this.assertionsMap === null) {
             throw new Error("Solver not initialized");
         }
-        if(this.removedAssertions.length === 0) throw new Error("No assertions to undo");
+        if (this.removedAssertions.length === 0) throw new Error("No assertions to undo");
         let [key, value] = this.removedAssertions.pop() as [Arith, Arith];
         this.assertionsMap.set(key, value);
     }
 
     public boardToString(): string {
-        if(this.assertionsMap === null || this.Z3 === null){
+        if (this.assertionsMap === null || this.Z3 === null) {
             throw new Error("Solver not initialized");
         }
         let board = "";
-        for(let i = 0; i < BOARD_SIZE; i++){
+        for (let i = 0; i < BOARD_SIZE; i++) {
             let row = "";
-            for(let j = 0; j < BOARD_SIZE; j++){
+            for (let j = 0; j < BOARD_SIZE; j++) {
                 let cell = this.cells[i][j];
                 let valString;
-                if(this.assertionsMap.has(cell)){
+                if (this.assertionsMap.has(cell)) {
                     let value = this.assertionsMap.get(cell);
                     valString = value?.toString();
                 }
                 else valString = "_";
                 row += valString + " ";
-                if(j % BOX_SIZE === BOX_SIZE - 1){
+                if (j % BOX_SIZE === BOX_SIZE - 1) {
                     row += "| ";
                 }
             }
             board += row + "\n";
-            if(i % BOX_SIZE === BOX_SIZE - 1){
+            if (i % BOX_SIZE === BOX_SIZE - 1) {
                 board += "---------------------\n";
             }
         }

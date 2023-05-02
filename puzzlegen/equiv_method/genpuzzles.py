@@ -15,5 +15,18 @@ with open("joblist.txt", "r") as joblist:
         puzz = ''.join(p.split())
         if (len(puzz) == 81):
             outpuzz.append(puzz)
+    with open('puzzlestmp.txt', 'w') as tmpfile:
+        tmpfile.write('\n'.join(outpuzz))
+    minimals = subprocess.run(
+        ['../minimize/suex9', 'puzzlestmp.txt'], stdout=subprocess.PIPE).stdout.split()
+    pairs = []
+    for i in range(len(puzzles)):
+        pairs.append(
+            {
+                "puzzle": puzzles[i],
+                "minimal": minimals[i]
+            }
+        )
+    # print(minimals)
     with open("puzzles.json", "w") as outfile:
-        json.dump(outpuzz, outfile)
+        json.dump(pairs, outfile)
