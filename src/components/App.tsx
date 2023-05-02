@@ -16,6 +16,7 @@ function App() {
     const [sudoku, setSudoku] = useState<Sudoku>();
     const [cells, setCells] = useState(getDefaultCells());
     const [originalCells, setOriginalCells] = useState(getDefaultCells());
+    const [counterExample, setCounterExample] = useState(getDefaultCells());
     const [frozen, setFrozen] = useState(true);
     const [numbersRemoved, setNumbersRemoved] = useState(0);
     const [gameOver, setGameOver] = useState(false);
@@ -26,6 +27,7 @@ function App() {
         await puzzle.init();
         setFrozen(false);
         setSudoku(puzzle);
+        setCounterExample(getDefaultCells());
         setCells(puzzle.getCellText());
         setOriginalCells(puzzle.getCellText());
     }
@@ -43,14 +45,19 @@ function App() {
         setNumbersRemoved(numbersRemoved + 1);
         setCells(sudoku.getCellText());
         setFrozen(true);
+        
         const isUnique = await sudoku.checkUniqueness();
         if (!isUnique.unique && isUnique.counterExample !== null) {
-            const counterEx = sudoku.modelToGrid(isUnique.counterExample);
-            console.log(counterEx);
+            const counterExample = sudoku.modelToGrid(isUnique.counterExample);
+            setCounterExample(counterExample);
             setGameOver(true);
         } else {
             setFrozen(false);
         }
+    }
+
+    function oscillate() {
+
     }
 
     function startGame() {
@@ -106,6 +113,8 @@ function App() {
                 <SudokuGrid
                     cells={cells}
                     originalCells={originalCells}
+                    counterExample={counterExample}
+                    isOscillating={gameOver}
                     frozen={frozen}
                     onClickCell={eraseCell}
                 />

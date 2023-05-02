@@ -19,7 +19,7 @@
     color: lightgray;
 
     &.game-over {
-        color: rgb(245, 139, 157);
+        color: $wrong-color;
     }
 }
 
