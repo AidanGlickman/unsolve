@@ -20,6 +20,7 @@ function App() {
     const [frozen, setFrozen] = useState(true);
     const [numbersRemoved, setNumbersRemoved] = useState(0);
     const [gameOver, setGameOver] = useState(false);
+    const [revealed, setRevealed] = useState(false);
 
     async function genPuzzle(seed: number) {
         const puzzle = new Sudoku(seed);
@@ -30,6 +31,7 @@ function App() {
         setCounterExample(getDefaultCells());
         setCells(puzzle.getCellText());
         setOriginalCells(puzzle.getCellText());
+        setRevealed(false);
     }
 
     async function eraseCell(row: number, col: number) {
@@ -56,10 +58,6 @@ function App() {
         }
     }
 
-    function oscillate() {
-
-    }
-
     function startGame() {
         // reset everything
         setSudoku(undefined);
@@ -73,7 +71,7 @@ function App() {
     }
 
     function canUndo() {
-        return sudoku && numbersRemoved > 0 && !gameOver;
+        return sudoku && numbersRemoved > 0 && !gameOver && !revealed;
     }
 
     function undo() {
@@ -84,6 +82,22 @@ function App() {
         sudoku.undo();
         setCells(sudoku.getCellText());
         setNumbersRemoved(numbersRemoved - 1);
+    }
+
+    function canReveal() {
+        return sudoku && !revealed;
+    }
+
+    function reveal() {
+        if (!sudoku) {
+            return;
+        }
+
+        const newCells = sudoku.minForm.map(row => row.map(str => str.replace('.', '')))
+
+        setCells(newCells);
+        setFrozen(true);
+        setRevealed(true);
     }
 
     return (
@@ -104,17 +118,26 @@ function App() {
                 Score: {numbersRemoved}
             </div>
             <div className="sudoku-grid-wrapper">
-                <button
-                    className="undo-button"
-                    onClick={() => undo()}
-                    disabled={!canUndo()}>
-                    Undo
-                </button>
+                <div className="sudoku-grid-buttons">
+                    <button
+                        className="undo-button"
+                        onClick={() => undo()}
+                        disabled={!canUndo()}>
+                        Undo
+                    </button>
+
+                    <button
+                        className="reveal-button"
+                        onClick={() => reveal()}
+                        disabled={!canReveal()}>
+                        Reveal
+                    </button>
+                </div>
                 <SudokuGrid
                     cells={cells}
                     originalCells={originalCells}
                     counterExample={counterExample}
-                    isOscillating={gameOver}
+                    isOscillating={gameOver && !revealed}
                     frozen={frozen}
                     onClickCell={eraseCell}
                 />

@@ -1,16 +1,26 @@
 import { Arith, Context, Model } from 'z3-solver';
 import Puzzle, { UniquenessResult } from './puzzle';
 import MWCRandom from './random';
-import puzzles from '../data/sudoku/puzzles'
+import puzzles from '../data/sudoku/puzzles_17' // puzzles with 17 clue minimal solutions, for more standardized difficulty
+
+const NBSP = '\xa0'; // nonbreaking space
 
 export const BOARD_SIZE = 9;
 export const BOX_SIZE = 3;
 
 export class Sudoku extends Puzzle {
     private cells: Arith[][];
+    minForm: string[][];
     constructor(seed: number) {
         super(seed);
         this.cells = [];
+        this.minForm = [];
+        for (let i = 0; i < BOARD_SIZE; i++) {
+            this.minForm.push([]);
+            for (let j = 0; j < BOARD_SIZE; j++) {
+                this.minForm[i].push(NBSP);
+            }
+        }
     }
 
     public async init(): Promise<void> {
@@ -72,19 +82,21 @@ export class Sudoku extends Puzzle {
             throw new Error("Solver not initialized");
         }
         let numInSet: number = Math.floor(this.random.random() * puzzles.length);
-        let puzzle = puzzles[numInSet];
+        let pair = puzzles[numInSet];
 
-        puzzle = this.randomSwaps(puzzle);
+        let [puzzle, min] = this.randomSwaps([pair['puzzle'], pair['minimal']]);
 
         for (let i = 0; i < BOARD_SIZE * BOARD_SIZE; i++) {
             let col = i % BOARD_SIZE;
             let row = Math.floor(i / BOARD_SIZE);
             let val = puzzle[i];
             this.assertionsMap.set(this.cells[row][col], this.Z3.Int.val(val));
+            this.minForm[row][col] = min[i];
         }
+        console.log(this.minForm);
     }
 
-    private randomSwaps(puzzle: string) {
+    private randomSwaps(pair: [string, string]): [string, string] {
         // generate a random mapping between numbers 1-9 and numbers 1-9
         let mapping = new Map<number, number>();
         let numbers = [1, 2, 3, 4, 5, 6, 7, 8, 9];
@@ -93,12 +105,19 @@ export class Sudoku extends Puzzle {
             mapping.set(i + 1, num);
         }
         // swap the numbers in the puzzle
+        let puzzle = pair[0];
+        let minimal = pair[1];
         let newPuzzle = "";
+        let newMinimal = "";
+
         for (let i = 0; i < BOARD_SIZE * BOARD_SIZE; i++) {
             let val = puzzle[i];
             newPuzzle += mapping.get(parseInt(val))?.toString();
+            val = minimal[i];
+            if (val === '.') newMinimal += '.';
+            else newMinimal += mapping.get(parseInt(val))?.toString();
         }
-        return newPuzzle;
+        return [newPuzzle, newMinimal];
     }
 
     public hasAssertion(val: [number, number]): boolean {

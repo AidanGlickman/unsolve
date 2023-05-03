@@ -58,6 +58,13 @@ button {
     justify-content: right;
 }
 
+.sudoku-grid-buttons {
+    display: flex;
+    width: 100%;
+    flex-direction: row;
+    justify-content: space-between;
+}
+
 .generation-settings {
     display: flex;
     flex-flow: row wrap;

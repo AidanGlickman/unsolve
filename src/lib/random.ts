@@ -1,7 +1,5 @@
 // A quick and dirty pseudorandom number generator because js math.Random isn't seedable for god knows what reason
 
-const MWC_CYCLE = 4096; // from paper
-const MWC_MAX = 809430660; // from paper
 
 class MWCRandom {
     protected prev: number;
