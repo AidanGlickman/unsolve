@@ -119,18 +119,6 @@ function App() {
                 <h1><em>un</em>solve</h1>
             </header>
             <main>
-                <div className={"instructions" + (gameOver ? " game-over" : "")}>
-                    {gameOver ?
-                        "Game over! The solution is not unique!"
-                        : sudoku ?
-                            "Click on any square to remove its number.\nKeep the solution unique!"
-                            :
-                            'Click "Generate Puzzle" to start a new game.'
-                    }
-                </div>
-                <div className="stats">
-                    Score: {numbersRemoved}
-                </div>
                 <div className={"instructions" + (gameOver ? " game-over" : "") + (win ? " win" : "")}>
                     {gameOver ? (
                         win
@@ -176,38 +164,7 @@ function App() {
                         <label htmlFor="seed">Seed:</label>
                         <input type="number" id="seed" name="seed" value={seed} onChange={(e) => setSeed(parseInt(e.target.value))} />
                     </div>
-                    <div className="sudoku-grid-wrapper">
-                        <div className="sudoku-grid-buttons">
-                            <button
-                                className="undo-button"
-                                onClick={() => undo()}
-                                disabled={!canUndo()}>
-                                Undo
-                            </button>
-
-                            <button
-                                className="reveal-button"
-                                onClick={() => reveal()}
-                                disabled={!canReveal()}>
-                                Reveal
-                            </button>
-                        </div>
-                        <SudokuGrid
-                            cells={cells}
-                            originalCells={originalCells}
-                            counterExample={counterExample}
-                            isOscillating={gameOver && !revealed}
-                            frozen={frozen}
-                            onClickCell={eraseCell}
-                        />
-                    </div>
-                    <div className="generation-settings">
-                        <div className="seed-input">
-                            <label htmlFor="seed">Seed:</label>
-                            <input type="number" id="seed" name="seed" value={seed} onChange={(e) => setSeed(parseInt(e.target.value))} />
-                        </div>
-                        <button onClick={() => startGame()}>Generate Puzzle</button>
-                    </div>
+                    <button onClick={() => startGame()}>Generate Puzzle</button>
                 </div>
             </main>
             <footer>
