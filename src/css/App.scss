@@ -21,6 +21,10 @@
     &.game-over {
         color: $wrong-color;
     }
+
+    &.win {
+        color: $right-color;
+    }
 }
 
 .stats {
