@@ -7,7 +7,19 @@
     margin: auto;
     padding: 0.5rem;
     text-align: center;
-    margin-top: 2rem;
+    padding-top: 2rem;
+    display: flex;
+    flex-direction: column;
+}
+
+main {
+    flex-grow: 1;
+}
+
+footer {
+    margin-top: 1rem;
+    margin-bottom: 0.2rem;
+    justify-self: flex-end;
 }
 
 .title {
