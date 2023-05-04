@@ -152,7 +152,7 @@ function App() {
                 </div>
             </main>
             <footer>
-                Made by <a href="https://www.aidanglickman.com" target="_blank">Aidan Glickman</a>, <a href="https://aaronson.org" target="_blank">Adam Aaronson</a>, and Aakash Narayan at UIUC | <a href="https://github.com/AidanGlickman/unsolve" target="_blank">GitHub</a>
+                Made by <a href="https://www.aidanglickman.com" target="_blank">Aidan Glickman</a>, <a href="https://aaronson.org" target="_blank">Adam Aaronson</a>, and <a href="https://github.com/aakashnarayan" target="_blank">Aakash Narayan</a> at UIUC | <a href="https://github.com/AidanGlickman/unsolve" target="_blank">GitHub</a>
             </footer>
         </div>
     )
