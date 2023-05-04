@@ -1,9 +1,10 @@
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import '../css/App.scss'
 import { BOARD_SIZE, BOX_SIZE, Sudoku } from '../lib/sudoku'
 import { SudokuGrid } from './SudokuGrid';
 
 const NBSP = '\xa0'; // nonbreaking space
+const WINNING_SCORE = 64;
 
 function getDefaultCells(): string[][] {
     return Array(BOARD_SIZE).fill(Array(BOARD_SIZE).fill(NBSP));
@@ -21,6 +22,7 @@ function App() {
     const [numbersRemoved, setNumbersRemoved] = useState(0);
     const [gameOver, setGameOver] = useState(false);
     const [revealed, setRevealed] = useState(false);
+    const win = numbersRemoved >= WINNING_SCORE;
 
     async function genPuzzle(seed: number) {
         const puzzle = new Sudoku(seed);
@@ -44,7 +46,6 @@ function App() {
         }
 
         sudoku.removeAssertion([row, col]);
-        setNumbersRemoved(numbersRemoved + 1);
         setCells(sudoku.getCellText());
         setFrozen(true);
         
@@ -55,6 +56,7 @@ function App() {
             setGameOver(true);
         } else {
             setFrozen(false);
+            setNumbersRemoved(numbersRemoved + 1);
         }
     }
 
@@ -71,7 +73,7 @@ function App() {
     }
 
     function canUndo() {
-        return sudoku && numbersRemoved > 0 && !gameOver && !revealed;
+        return sudoku && numbersRemoved > 0 && !revealed;
     }
 
     function undo() {
@@ -79,13 +81,18 @@ function App() {
             return;
         }
 
+        if (win || !gameOver) {
+            setNumbersRemoved(numbersRemoved - 1);
+        }
+
         sudoku.undo();
+        setGameOver(false);
+        setFrozen(false);
         setCells(sudoku.getCellText());
-        setNumbersRemoved(numbersRemoved - 1);
     }
 
     function canReveal() {
-        return sudoku && !revealed;
+        return sudoku && !revealed && !win;
     }
 
     function reveal() {
@@ -100,6 +107,12 @@ function App() {
         setRevealed(true);
     }
 
+    useEffect(() => {
+        if (win) {
+            setGameOver(true);
+        }
+    }, [numbersRemoved])
+
     return (
         <div className="app">
             <header className="title">
@@ -113,6 +126,21 @@ function App() {
                             "Click on any square to remove its number.\nKeep the solution unique!"
                             :
                             'Click "Generate Puzzle" to start a new game.'
+                    }
+                </div>
+                <div className="stats">
+                    Score: {numbersRemoved}
+                </div>
+                <div className={"instructions" + (gameOver ? " game-over" : "") + (win ? " win" : "")}>
+                    {gameOver ? (
+                        win
+                        ? "You win! No more numbers can be removed!"
+                        : "Game over! The solution is not unique!"
+                    ) : (
+                        sudoku
+                        ? "Click on any square to remove its number.\nKeep the solution unique!"
+                        : 'Click "Generate Puzzle" to start a new game.'
+                    )
                     }
                 </div>
                 <div className="stats">
@@ -138,7 +166,7 @@ function App() {
                         cells={cells}
                         originalCells={originalCells}
                         counterExample={counterExample}
-                        isOscillating={gameOver && !revealed}
+                        isOscillating={gameOver && !revealed && !win}
                         frozen={frozen}
                         onClickCell={eraseCell}
                     />
@@ -148,7 +176,38 @@ function App() {
                         <label htmlFor="seed">Seed:</label>
                         <input type="number" id="seed" name="seed" value={seed} onChange={(e) => setSeed(parseInt(e.target.value))} />
                     </div>
-                    <button onClick={() => startGame()}>Generate Puzzle</button>
+                    <div className="sudoku-grid-wrapper">
+                        <div className="sudoku-grid-buttons">
+                            <button
+                                className="undo-button"
+                                onClick={() => undo()}
+                                disabled={!canUndo()}>
+                                Undo
+                            </button>
+
+                            <button
+                                className="reveal-button"
+                                onClick={() => reveal()}
+                                disabled={!canReveal()}>
+                                Reveal
+                            </button>
+                        </div>
+                        <SudokuGrid
+                            cells={cells}
+                            originalCells={originalCells}
+                            counterExample={counterExample}
+                            isOscillating={gameOver && !revealed}
+                            frozen={frozen}
+                            onClickCell={eraseCell}
+                        />
+                    </div>
+                    <div className="generation-settings">
+                        <div className="seed-input">
+                            <label htmlFor="seed">Seed:</label>
+                            <input type="number" id="seed" name="seed" value={seed} onChange={(e) => setSeed(parseInt(e.target.value))} />
+                        </div>
+                        <button onClick={() => startGame()}>Generate Puzzle</button>
+                    </div>
                 </div>
             </main>
             <footer>
