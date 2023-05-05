@@ -93,7 +93,6 @@ export class Sudoku extends Puzzle {
             this.assertionsMap.set(this.cells[row][col], this.Z3.Int.val(val));
             this.minForm[row][col] = min[i];
         }
-        console.log(this.minForm);
     }
 
     private randomSwaps(pair: [string, string]): [string, string] {
